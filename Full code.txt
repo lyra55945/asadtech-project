@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Income & Expense Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --primary: #673ab7;
+            --secondary: #f44336;
+            --bg: #f5f6fa;
+            --surface: #fff;
+            --accent: #ff9800;
+            --success: #4caf50;
+            --income: #8bc34a;
+            --expense: #e57373;
+            --text: #222;
+            --muted: #888;
+        }
+        body {
+            background: var(--bg);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .center-container {
+            width: 95%;
+            max-width: 380px;
+            margin: 45px auto 0 auto;
+            background: var(--surface);
+            padding: 32px 24px 24px 24px;
+            box-shadow: 0 8px 24px #d1c4e9;
+            border-radius: 18px;
+            text-align: center;
+            position: relative;
+        }
+        h2, h3 {
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+        h2 {
+            letter-spacing: 1px;
+            font-size: 2rem;
+        }
+        h3 {
+            margin-top: 28px;
+        }
+        label {
+            font-weight: 500;
+            color: var(--muted);
+            float: left;
+            font-size: 0.98rem;
+        }
+        form {
+            margin: 0 0 10px 0;
+        }
+        input, select, button {
+            padding: 10px 12px;
+            margin: 7px 0;
+            width: 100%;
+            box-sizing: border-box;
+            border-radius: 6px;
+            border: 1.5px solid #dcdde1;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input:focus, select:focus {
+            border-color: var(--primary);
+        }
+        input[type="number"]::-webkit-inner-spin-button {
+            opacity: 0.5;
+        }
+        button {
+            background: linear-gradient(90deg, var(--primary) 60%, var(--accent));
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 2px 6px #b39ddb2a;
+            transition: background 0.2s, transform 0.1s;
+        }
+        button:hover {
+            background: linear-gradient(90deg, var(--accent) 40%, var(--primary));
+            transform: scale(1.025);
+        }
+        .btn-logout {
+            background: var(--secondary);
+            margin-top: -8px;
+            float: right;
+            width: auto;
+            padding: 7px 18px;
+            font-size: 0.97rem;
+        }
+        .summary {
+            margin: 18px 0 12px 0;
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+        }
+        .summary-card {
+            background: linear-gradient(135deg, #ede7f6 60%, #fff3e0);
+            border-radius: 12px;
+            padding: 10px 8px;
+            flex: 1;
+            box-shadow: 0 2px 8px #ede7f644;
+        }
+        .summary-card span.label {
+            font-size: 0.92rem;
+            color: var(--muted);
+            display: block;
+        }
+        .income { color: var(--income); font-weight: bold;}
+        .expense { color: var(--expense); font-weight: bold;}
+        .balance { color: var(--primary); font-weight: bold;}
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 14px;
+            background: #f3f0fa;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px #ede7f633;
+        }
+        th, td {
+            border-bottom: 1px solid #e0e0e0;
+            padding: 7px 3px;
+            text-align: center;
+            font-size: 1rem;
+        }
+        th {
+            background: #ede7f6;
+            color: var(--primary);
+            font-weight: 500;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .entry-income {
+            color: var(--success);
+            font-weight: bold;
+        }
+        .entry-expense {
+            color: var(--secondary);
+            font-weight: bold;
+        }
+        .error {
+            color: var(--secondary);
+            font-size: 15px;
+            margin-top: 7px;
+            margin-bottom: 0;
+        }
+        .footer-note {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 28px;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+        @media (max-width: 500px) {
+            .center-container {
+                margin: 0;
+                border-radius: 0;
+                box-shadow: none;
+                min-height: 100vh;
+                padding: 18px 4vw 18px 4vw;
+            }
+            .summary { flex-direction: column; gap: 6px;}
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="login-page" class="center-container">
+        <h2>Welcome Back 👋</h2>
+        <form id="login-form" autocomplete="off">
+            <input type="text" id="username" placeholder="Username" required><br>
+            <input type="password" id="password" placeholder="Password" required><br>
+            <button type="submit">Login</button>
+        </form>
+        <p id="login-error" class="error"></p>
+        <div class="footer-note">
+            <span style="color: var(--primary); font-weight: 500;">Demo Login:</span><br>
+            Username: <b>user</b> &nbsp;|&nbsp; Password: <b>1234</b>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="center-container" style="display:none;">
+        <button id="logout-btn" class="btn-logout">Logout</button>
+        <h2>Income & Expense Dashboard</h2>
+        <div class="summary">
+            <div class="summary-card">
+                <span class="label">Income</span>
+                <span id="total-income" class="income">Ksh 0</span>
+            </div>
+            <div class="summary-card">
+                <span class="label">Expense</span>
+                <span id="total-expense" class="expense">Ksh 0</span>
+            </div>
+            <div class="summary-card">
+                <span class="label">Balance</span>
+                <span id="balance" class="balance">Ksh 0</span>
+            </div>
+        </div>
+
+        <h3>Add New Entry</h3>
+        <form id="entry-form" autocomplete="off">
+            <input type="text" id="desc" placeholder="Description (e.g. Salary, Food, Book)" required>
+            <input type="number" id="amount" placeholder="Amount (Ksh)" min="1" required>
+            <select id="type">
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+            </select>
+            <button type="submit">Add Entry</button>
+        </form>
+
+        <h3>History</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Amount (Ksh)</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+            <tbody id="history">
+                <!-- Entries appear here -->
+            </tbody>
+        </table>
+        <div class="footer-note">
+            <span>Thank you for using me</span>
+        </div>
+    </div>
+
+    <script>
+        // Simple in-browser login (username: user, password: 1234)
+        const loginForm = document.getElementById('login-form');
+        const loginPage = document.getElementById('login-page');
+        const dashboard = document.getElementById('dashboard');
+        const loginError = document.getElementById('login-error');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        // For storing entries (in-memory, will reset on refresh)
+        let entries = [];
+
+        // Format number as Ksh
+        function formatKsh(amount) {
+            // To include thousands separator, e.g. Ksh 12,345
+            return "Ksh " + amount.toLocaleString('en-KE', {minimumFractionDigits: 0});
+        }
+
+        function updateDashboard() {
+            let totalIncome = 0;
+            let totalExpense = 0;
+            let historyHTML = "";
+
+            if (entries.length === 0) {
+                historyHTML = `<tr><td colspan="3" style="color:var(--muted);font-style:italic;">No entries yet. Add some!</td></tr>`;
+            } else {
+                entries.slice().reverse().forEach(entry => {
+                    if (entry.type === "income") {
+                        totalIncome += entry.amount;
+                    } else {
+                        totalExpense += entry.amount;
+                    }
+                    historyHTML += `<tr>
+                        <td>${entry.desc}</td>
+                        <td class="entry-${entry.type}">${formatKsh(entry.amount)}</td>
+                        <td class="entry-${entry.type}">${entry.type.charAt(0).toUpperCase() + entry.type.slice(1)}</td>
+                    </tr>`;
+                });
+            }
+
+            document.getElementById('total-income').textContent = formatKsh(totalIncome);
+            document.getElementById('total-expense').textContent = formatKsh(totalExpense);
+            document.getElementById('balance').textContent = formatKsh(totalIncome - totalExpense);
+            document.getElementById('history').innerHTML = historyHTML;
+        }
+
+        // Handle login
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (username === 'user' && password === '1234') {
+                loginPage.style.display = 'none';
+                dashboard.style.display = 'block';
+                loginError.textContent = '';
+                // Focus to first input of dashboard
+                setTimeout(() => {
+                    document.getElementById('desc').focus();
+                }, 100);
+            } else {
+                loginError.textContent = '❌ Invalid username or password.';
+            }
+        });
+
+        // Handle logout
+        logoutBtn.addEventListener('click', function() {
+            dashboard.style.display = 'none';
+            loginPage.style.display = 'block';
+            loginForm.reset();
+            loginError.textContent = '';
+        });
+
+        // Handle adding income/expense
+        document.getElementById('entry-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const desc = document.getElementById('desc').value.trim();
+            const amount = parseFloat(document.getElementById('amount').value);
+            const type = document.getElementById('type').value;
+
+            if (!desc || isNaN(amount) || amount <= 0) {
+                alert('Please enter a valid description and amount.');
+                return;
+            }
+
+            entries.push({ desc, amount, type });
+            updateDashboard();
+
+            // Clear form and focus back to description
+            document.getElementById('desc').value = '';
+            document.getElementById('amount').value = '';
+            document.getElementById('type').value = 'income';
+            document.getElementById('desc').focus();
+        });
+
+        // Enter = submit for login and add-entry forms
+        document.getElementById('desc').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('amount').focus();
+            }
+        });
+        document.getElementById('amount').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('type').focus();
+            }
+        });
+
+        // Keyboard shortcut: Alt+L for logout
+        window.addEventListener('keydown', function(e) {
+            if (dashboard.style.display !== "none" && e.altKey && (e.key === 'l' || e.key === 'L')) {
+                logoutBtn.click();
+            }
+        });
+
+        // Initialize dashboard on load (empty)
+        updateDashboard();
+    </script>
+</body>
+</html>

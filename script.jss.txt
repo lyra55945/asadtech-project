@@ -1,0 +1,81 @@
+// Simple in-browser login (username: user, password: 1234)
+const loginForm = document.getElementById('login-form');
+const loginPage = document.getElementById('login-page');
+const dashboard = document.getElementById('dashboard');
+const loginError = document.getElementById('login-error');
+const logoutBtn = document.getElementById('logout-btn');
+
+// For storing entries (in-memory, will reset on refresh)
+let entries = [];
+
+function updateDashboard() {
+    let totalIncome = 0;
+    let totalExpense = 0;
+    let historyHTML = "";
+
+    entries.forEach(entry => {
+        if (entry.type === "income") {
+            totalIncome += entry.amount;
+        } else {
+            totalExpense += entry.amount;
+        }
+        historyHTML += `<tr>
+            <td>${entry.desc}</td>
+            <td>${entry.amount}</td>
+            <td>${entry.type.charAt(0).toUpperCase() + entry.type.slice(1)}</td>
+        </tr>`;
+    });
+
+    document.getElementById('total-income').textContent = totalIncome;
+    document.getElementById('total-expense').textContent = totalExpense;
+    document.getElementById('balance').textContent = totalIncome - totalExpense;
+    document.getElementById('history').innerHTML = historyHTML;
+}
+
+// Handle login
+loginForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+
+    if (username === 'user' && password === '1234') {
+        loginPage.style.display = 'none';
+        dashboard.style.display = 'block';
+        loginError.textContent = '';
+    } else {
+        loginError.textContent = 'Invalid username or password.';
+    }
+});
+
+// Handle logout
+logoutBtn.addEventListener('click', function() {
+    dashboard.style.display = 'none';
+    loginPage.style.display = 'block';
+    // Optionally clear entries or keep them for the demo
+    // entries = [];
+    // updateDashboard();
+});
+
+// Handle adding income/expense
+document.getElementById('entry-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const desc = document.getElementById('desc').value.trim();
+    const amount = parseFloat(document.getElementById('amount').value);
+    const type = document.getElementById('type').value;
+
+    if (!desc || isNaN(amount) || amount <= 0) {
+        alert('Please enter a valid description and amount.');
+        return;
+    }
+
+    entries.push({ desc, amount, type });
+    updateDashboard();
+
+    // Clear form
+    document.getElementById('desc').value = '';
+    document.getElementById('amount').value = '';
+    document.getElementById('type').value = 'income';
+});
+
+// Initialize dashboard on load (empty)
+updateDashboard();
