@@ -20,15 +20,7 @@ Locate the index.html file in the root directory.
 Double-click to open it in your preferred web browser.
 Usage:
 
-Log in with the demo credentials (user / 1234).
-Add your income and expense entries.
-View summaries and transaction history.
-Click logout to end your session (all data will be cleared).
-Deployment URL
-Access the live application here:
-https://yourusername.github.io/asadtech-income-expense-app/
 
-(Replace yourusername with your actual GitHub username after deploying.)
 
 Credits
 Student Name: Timothy Kaburu
