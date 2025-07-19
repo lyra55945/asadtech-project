@@ -188,7 +188,7 @@
     <!-- Dashboard -->
     <div id="dashboard" class="center-container" style="display:none;">
         <button id="logout-btn" class="btn-logout">Logout</button>
-        <h2>Income & Expense Dashboard</h2>
+        <h2>ASAD TECH INCOME AND EXPENSE TRACKER</h2>
         <div class="summary">
             <div class="summary-card">
                 <span class="label">Income</span>
