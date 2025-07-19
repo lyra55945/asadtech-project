@@ -1,6 +1,6 @@
 Project Overview
 This web application is designed for easy, secure tracking of personal income and expenses, specifically for users handling transactions in Kenyan Shillings (Ksh).
-Intended for students, staff, and stakeholders at ASAD TECH, it offers an offline, browser-based solution focusing on privacy, simplicity, and usability. 
+Intended for The admin, staff and stakeholders at ASAD TECH, it offers an offline, browser-based solution focusing on privacy, simplicity, and usability. 
 All data is handled client-side and cleared upon logout to ensure confidentiality.
 
 Features
